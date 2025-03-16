@@ -1,3 +1,5 @@
+venv/
+
 # Temporary Python files
 *.pyc
 *.egg-info/
