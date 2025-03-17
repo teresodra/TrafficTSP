@@ -37,6 +37,7 @@ def compare_strategies(strategies: dict,
     # Save to SQL
     save_results_to_sql(results)
 
+    # Visualise results
     visualise_results(max_nodes=max_nodes)
 
 
@@ -72,26 +73,36 @@ def visualise_results(max_nodes,
     df = pd.read_sql(query, con=engine)
 
     # Create a plot
-    plt.figure()
+    fig, ax1 = plt.subplots()
+
+    # Create a second y-axis
+    ax2 = ax1.twinx()
 
     # Loop through strategies and plot
     for strategy in df["strategy"].unique():
         data = df[df["strategy"] == strategy]
 
         # Solid line for cost
-        plt.plot(data["n_nodes"], data["avg_cost"],
-                 color='blue', label=f"{strategy} - Cost", linestyle="-")
+        ax1.plot(data["n_nodes"], data["avg_cost"],
+                 color='blue', label=f"{strategy} - Cost",
+                 linestyle="-")
 
         # Dotted line for time taken
-        plt.plot(data["n_nodes"], data["avg_time"],
-                 color='blue', label=f"{strategy} - Time", linestyle="dotted")
+        ax2.plot(data["n_nodes"], data["avg_time"],
+                 color='blue', label=f"{strategy} - Time Taken",
+                 linestyle="dotted")
 
-    # Labels and title
-    plt.xlabel("Number of Nodes")
-    plt.ylabel("Cost / Time (s)")
+    # Labels and titles
+    ax1.set_xlabel("Number of Nodes")
+    ax1.set_ylabel("Cost (Minutes)")
+    ax2.set_ylabel("Time Taken (Seconds)")
+
+    # Title
     plt.title("Strategy Performance Comparison")
-    plt.legend()
-    plt.grid(True)
+
+    # Legends
+    ax1.legend(loc="upper left")
+    ax2.legend(loc="upper right")
 
     # Show the plot
     plt.show()
@@ -101,4 +112,4 @@ if __name__ == "__main__":
     strategies = {
         "Greedy": greedy_strategy
     }
-    compare_strategies(strategies, max_nodes=30, n_repetitions=5)
+    compare_strategies(strategies, max_nodes=10, n_repetitions=5)
