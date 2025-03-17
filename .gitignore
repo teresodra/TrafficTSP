@@ -5,7 +5,6 @@ venv/
 *.egg-info/
 __pycache__/
 .ipynb_checkpoints/
-setup.py
 pip-wheel-metadata/
 
 # Temporary OS files
