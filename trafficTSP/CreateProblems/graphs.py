@@ -13,7 +13,7 @@ def create_graph(n_nodes: int) -> dict:
     nodes = [(random.uniform(0, 1), random.uniform(0, 1))
              for _ in range(n_nodes)]
     # Create a graph with random weight functions
-    graph = dict()
+    graph = {'n_nodes': n_nodes}
     for i in range(n_nodes):
         for j in range(n_nodes):
             if i != j:
