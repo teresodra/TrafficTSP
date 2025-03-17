@@ -9,6 +9,7 @@ def greedy_strategy(graph: dict, start_node: int = 0) -> list:
     current_node = start_node
     solution = [current_node]
     t = 0
+    # While there are nodes left to visit
     while nodes_left != set():
         # Choose closest node
         next_node = min(
