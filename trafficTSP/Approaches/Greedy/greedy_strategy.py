@@ -21,3 +21,4 @@ def greedy_strategy(graph: dict, start_node: int = 0) -> list:
         t += weight
         nodes_left.remove(next_node)
         solution.append(next_node)
+    return solution
