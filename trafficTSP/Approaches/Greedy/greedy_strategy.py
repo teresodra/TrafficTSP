@@ -2,7 +2,7 @@
 
 def greedy_strategy(graph: dict, start_node: int = 0) -> list:
     """
-    Returns a solution to the TSP using a greedy strategy.
+    Returns a solution to the TSP using the greedy strategy.
     """
     n_nodes = graph['n_nodes']
     nodes_left = set(range(1, n_nodes))
