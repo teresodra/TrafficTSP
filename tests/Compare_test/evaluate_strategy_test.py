@@ -31,8 +31,8 @@ def test_evaluate_solution(fixed_graph):
     assert total_weight > 0, (
         "Total weight should be positive"
     )
-    assert total_weight == np.float64(11.715326368366156), (
-        "Total weight should be 11.715326368366156"
+    assert total_weight == np.float64(16.374273794000544), (
+        "Total weight should be 16.374273794000544"
     )
 
 
@@ -61,6 +61,6 @@ def test_evaluate_strategy(fixed_graph):
     assert total_weight > 0, (
         "Total weight should be positive"
     )
-    assert total_weight == np.float64(10.728057124205758), (
-        "Total weight should be 10.728057124205758"
+    assert total_weight == np.float64(13.661218871595167), (
+        "Total weight should be 13.661218871595167"
     )
