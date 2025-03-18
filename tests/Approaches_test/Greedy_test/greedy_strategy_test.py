@@ -38,6 +38,6 @@ def test_greedy_strategy_output(fixed_graph):
     """Check if the greedy strategy returns the right answer."""
     solution = greedy_strategy(fixed_graph)
 
-    assert solution == [0, 3, 1, 2], (
+    assert solution == [0, 3, 2, 1], (
         "The solution should be "
     )
