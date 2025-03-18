@@ -5,7 +5,10 @@ def greedy_strategy(graph: dict, start_node: int = 0) -> list:
     Returns a solution to the TSP using the greedy strategy.
     """
     n_nodes = graph['n_nodes']
-    nodes_left = set(range(1, n_nodes))
+    # Create a set of nodes left to visit eliminating the start node
+    nodes_left = set(range(n_nodes))
+    nodes_left.remove(start_node)
+    # Set the current node as the start node
     current_node = start_node
     solution = [current_node]
     t = 0
@@ -21,4 +24,5 @@ def greedy_strategy(graph: dict, start_node: int = 0) -> list:
         t += weight
         nodes_left.remove(next_node)
         solution.append(next_node)
+        current_node = next_node
     return solution
