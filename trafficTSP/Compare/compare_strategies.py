@@ -14,7 +14,7 @@ def compare_strategies(strategies: dict,
                        max_nodes: str = 10,
                        n_repetitions: int = 5):
     """
-    Compare the strategies in the list with the given data.
+    Compare the strategies in randomly generated graphs.
     """
     results = []
     for n_nodes in range(3, max_nodes):
