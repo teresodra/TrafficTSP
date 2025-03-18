@@ -7,7 +7,7 @@ from trafficTSP.CreateProblems.graphs import create_graph
 from trafficTSP.Compare.evaluate_strategy import evaluate_strategy
 from trafficTSP.Approaches.Greedy.greedy_strategy import greedy_strategy
 
-default_db_location = "strategy_results.db"
+default_db_location = "databases\\strategy_results.db"
 
 
 def compare_strategies(strategies: dict,
