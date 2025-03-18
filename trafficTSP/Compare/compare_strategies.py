@@ -1,20 +1,24 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import time
 from sqlalchemy import create_engine
 from trafficTSP.CreateProblems.graphs import create_graph
 from trafficTSP.Compare.evaluate_strategy import evaluate_strategy
 from trafficTSP.Approaches.Greedy.greedy_strategy import greedy_strategy
 
+default_db_location = "strategy_results.db"
+
 
 def compare_strategies(strategies: dict,
-                       max_nodes: str = 100,
-                       n_repetitions: int = 10):
+                       max_nodes: str = 10,
+                       n_repetitions: int = 5):
     """
     Compare the strategies in the list with the given data.
     """
     results = []
     for n_nodes in range(3, max_nodes):
+        print(f"Running for {n_nodes} nodes")
         # run n_repetitions
         for _ in range(n_repetitions):
             graph = create_graph(n_nodes)
@@ -38,10 +42,10 @@ def compare_strategies(strategies: dict,
     save_results_to_sql(results)
 
     # Visualise results
-    visualise_results(max_nodes=max_nodes)
+    visualise_results()
 
 
-def save_results_to_sql(results, db_name="strategy_results.db"):
+def save_results_to_sql(results, db_name=default_db_location):
     """
     Save the Pandas DataFrame results to an SQLite database.
     """
@@ -54,8 +58,7 @@ def save_results_to_sql(results, db_name="strategy_results.db"):
     print(f"✅ Results saved to {db_name}")
 
 
-def visualise_results(max_nodes,
-                      db_name="strategy_results.db"):
+def visualise_results(db_name=default_db_location):
     """
     Visualise strategy performance:
     - Solid line: Average cost per strategy
@@ -78,18 +81,24 @@ def visualise_results(max_nodes,
     # Create a second y-axis
     ax2 = ax1.twinx()
 
+    # Number of unique strategies
+    strategies = df["strategy"].unique()
+
+    # Generate a list of colors from the 'viridis' colormap
+    colours = plt.cm.viridis(np.linspace(0, 1, len(strategies)))
+
     # Loop through strategies and plot
-    for strategy in df["strategy"].unique():
+    for strategy, colour in zip(strategies, colours):
         data = df[df["strategy"] == strategy]
 
         # Solid line for cost
         ax1.plot(data["n_nodes"], data["avg_cost"],
-                 color='blue', label=f"{strategy} - Cost",
+                 color=colour, label=f"{strategy} - Cost",
                  linestyle="-")
 
         # Dotted line for time taken
         ax2.plot(data["n_nodes"], data["avg_time"],
-                 color='blue', label=f"{strategy} - Time Taken",
+                 color=colour, label=f"{strategy} - Time Taken",
                  linestyle="dotted")
 
     # Labels and titles
