@@ -12,10 +12,11 @@ def evaluate_solution(graph: dict, solution: list) -> float:
         weight_at_t = weight_func(t)
         total_weight += weight_at_t
         t += weight_at_t
-    # Add the weight to return to the starting node
-    weight_func = graph[(solution[-1], solution[0])]
-    weight_at_t = weight_func(t)
-    total_weight += weight_at_t
+    if len(solution) > 1:
+        # Add the weight to return to the starting node
+        weight_func = graph[(solution[-1], solution[0])]
+        weight_at_t = weight_func(t)
+        total_weight += weight_at_t
     return total_weight
 
 
