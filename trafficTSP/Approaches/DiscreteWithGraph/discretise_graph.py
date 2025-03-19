@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 def discretise_and_approximate_graph(graph: dict, bins: int) -> dict:
@@ -10,24 +9,30 @@ def discretise_and_approximate_graph(graph: dict, bins: int) -> dict:
     """
     n_nodes = graph['n_nodes']
     time_range = graph['time_range']
-    timestep = (time_range[1] - time_range[0])/(bins - 1)
+    if bins <= 1:
+        timestep = time_range[1] - time_range[0]
+    else:
+        timestep = (time_range[1] - time_range[0])/(bins - 1)
 
-    # Create the MultiIndex for the DataFrame
-    multi_index = pd.MultiIndex.from_product(
-        [range(n_nodes), range(n_nodes), range(bins)],
-        names=['start_node', 'final_node', 'time']
-    )
-
-    # Initialize the DataFrame
-    df = pd.DataFrame(index=multi_index, columns=['cost'])
+    rows = []
     # Iterate over all the edges
     for i in range(n_nodes):
         for j in range(n_nodes):
             if i != j:
                 for step in range(bins):
                     # Calculate the weight at time t
+                    weight_funct = graph[(i, j)]
                     t = step * timestep
-                    weight = graph[(i, j)](t)
+                    weight = weight_funct(t)
                     # Add the weight to the DataFrame
-                    df.loc[(i, j, step), 'value'] = round(weight/timestep)
+                    new_row = {'start_node': i,
+                               'final_node': j,
+                               'time': step,
+                               'travel_time': round(weight/timestep)}
+                    rows.append(new_row)
+
+    # Create DataFrame from rows
+    df = pd.DataFrame(rows,
+                      columns=['start_node', 'final_node',
+                               'time', 'travel_time'])
     return df
