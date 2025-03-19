@@ -90,7 +90,7 @@ def discrete_strategy(graph: dict,
         next_node = next_edge.end_node
         solution.append(next_node)
     # return the cost of the solution
-    return objective.Value()
+    return solution
 
 
 def edges_from_node(node, x):
