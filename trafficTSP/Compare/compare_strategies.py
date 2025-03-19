@@ -42,7 +42,11 @@ def compare_strategies(strategies: dict,
     save_results_to_sql(results)
 
     # Visualise results
-    visualise_results()
+    name = "results"
+    for key in strategies.keys():
+        name += "_" + key
+    name += f"_nodes_{max_nodes}_reps_{n_repetitions}.png"
+    visualise_results(name)
 
 
 def save_results_to_sql(results, db_name=default_db_location):
@@ -58,7 +62,8 @@ def save_results_to_sql(results, db_name=default_db_location):
     print(f"✅ Results saved to {db_name}")
 
 
-def visualise_results(db_name=default_db_location):
+def visualise_results(name: str = "results.png",
+                      db_name: str = default_db_location):
     """
     Visualise strategy performance:
     - Solid line: Average cost per strategy
@@ -112,6 +117,9 @@ def visualise_results(db_name=default_db_location):
     # Legends
     ax1.legend(loc="upper left")
     ax2.legend(loc="upper right")
+
+    # Save the plot
+    plt.savefig(f"results\\{name}.png")
 
     # Show the plot
     plt.show()

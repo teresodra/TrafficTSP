@@ -15,7 +15,7 @@ Edge = namedtuple('Edge', ['start_node', 'start_step', 'end_node', 'end_step'])
 
 
 def discrete_strategy(graph: dict,
-                      n_bins: int = 50,
+                      n_bins: int = 20,
                       starting_node: int = 0
                       ) -> float:
     """

@@ -22,7 +22,7 @@ def main():
             "Discrete": discrete_strategy
         },
         max_nodes=args.nodes,
-        n_repetitions=10
+        n_repetitions=2
     )
 
 
