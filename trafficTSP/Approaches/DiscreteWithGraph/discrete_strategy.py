@@ -74,7 +74,7 @@ def discrete_strategy(graph: dict,
             solver.Add(arriving_time == leaving_time)
         else:
             # Except for the initial node
-            solver.Add(leaving_time <= arriving_time)
+            solver.Add(leaving_time == 0)
             # for edge in edges_to_node(node, x):
             #     objective.SetCoefficient(x[edge], edge.end_step)
 
