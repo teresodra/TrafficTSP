@@ -15,7 +15,7 @@ Edge = namedtuple('Edge', ['start_node', 'start_step', 'end_node', 'end_step'])
 
 
 def discrete_strategy(graph: dict,
-                      n_bins: int = 100,
+                      n_bins: int = 40,
                       starting_node: int = 0
                       ) -> float:
     """
@@ -55,7 +55,7 @@ def discrete_strategy(graph: dict,
                     f'x_{edge.start_node}_{edge.start_step}' +
                     f'_{edge.end_node}_{edge.end_step}')
                 cost[edge] = travel_time
-                # objective.SetCoefficient(x[edge], travel_time)
+                objective.SetCoefficient(x[edge], travel_time)
 
     for node in range(n_nodes):
         # for each node, the sum of the variables representing leaving edges
@@ -75,8 +75,8 @@ def discrete_strategy(graph: dict,
         else:
             # Except for the initial node
             solver.Add(leaving_time <= arriving_time)
-            for edge in edges_to_node(node, x):
-                objective.SetCoefficient(x[edge], edge.end_step)
+            # for edge in edges_to_node(node, x):
+            #     objective.SetCoefficient(x[edge], edge.end_step)
 
     objective.SetMinimization()
 
