@@ -37,7 +37,9 @@ def compare_strategies(strategies: dict,
                     "cost": cost,
                     "time_taken": time_taken
                 })
-                print(results)
+                if len(results) % 3 == 0:
+                    print(results[-3:])
+                    print("\n")
 
     # Save to SQL
     save_results_to_sql(results)
@@ -48,6 +50,7 @@ def compare_strategies(strategies: dict,
         name += "_" + key
     name += f"_nodes_{max_nodes}_reps_{n_repetitions}.png"
     visualise_results(name)
+    print(results)
 
 
 def save_results_to_sql(results, db_name=default_db_location):
@@ -120,7 +123,7 @@ def visualise_results(name: str = "results.png",
     ax2.legend(loc="upper right")
 
     # Save the plot
-    plt.savefig(f"results\\{name}.png")
+    plt.savefig(f"results\\{name}")
 
     # Show the plot
     plt.show()

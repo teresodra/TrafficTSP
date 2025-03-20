@@ -24,8 +24,6 @@ def discrete_strategy(graph: dict,
     n_nodes = graph['n_nodes']
     time_range = graph['time_range']
     time_increments = (time_range[1] - time_range[0])/(n_bins - 1)
-    # Define a large number for the M method
-    M = n_nodes * time_range[1]
 
     # Initialize OR-Tools solver
     solver = pywraplp.Solver.CreateSolver("SCIP")
@@ -39,9 +37,6 @@ def discrete_strategy(graph: dict,
     # Define decision variables and associated costs
     x = dict()
     cost = dict()
-    # Define continuous variable for each node
-    t = {node: solver.NumVar(0, solver.infinity(), f't_{node}')
-         for node in range(n_nodes)}
     # A variable will represent each edge that connect each pair two vertices
     # (two pairs of nodes and timesteps)
     for vertex1, vertex2 in product(vertices, vertices):
@@ -52,7 +47,7 @@ def discrete_strategy(graph: dict,
             # At least 1 to avoid loops
             round_travel_timesteps = max(round(travel_time/time_increments),
                                          1)
-            if vertex2['step'] - vertex1['step'] >= round_travel_timesteps:
+            if vertex2['step'] - vertex1['step'] == round_travel_timesteps:
                 # It is possible to travel from vertex1 to vertex2
                 edge = Edge(vertex1["node"], vertex1["step"],
                             vertex2["node"], vertex2["step"])
@@ -60,12 +55,7 @@ def discrete_strategy(graph: dict,
                     f'x_{edge.start_node}_{edge.start_step}' +
                     f'_{edge.end_node}_{edge.end_step}')
                 cost[edge] = travel_time
-                # objective.SetCoefficient(x[edge], vertex2['step'] - vertex1['step'])
-                objective.SetCoefficient(x[edge], travel_time)
-                # If this edge is in the solution, time in arrival node should
-                # be greater than time in departure node plus travel time
-                # solver.Add(t[edge.end_node] + M * (1 - x[edge]) >=
-                #            t[edge.start_node] + travel_time)
+                # objective.SetCoefficient(x[edge], travel_time)
 
     for node in range(n_nodes):
         # for each node, the sum of the variables representing leaving edges
@@ -82,10 +72,11 @@ def discrete_strategy(graph: dict,
         if node != starting_node:
             # The we should leave a node in the same moment we arrive
             solver.Add(arriving_time == leaving_time)
-            objective.SetCoefficient(x[edge], travel_time)
         else:
             # Except for the initial node
             solver.Add(leaving_time <= arriving_time)
+            for edge in edges_to_node(node, x):
+                objective.SetCoefficient(x[edge], edge.end_step)
 
     objective.SetMinimization()
 
