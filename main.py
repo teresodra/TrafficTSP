@@ -1,8 +1,8 @@
 from trafficTSP.Compare.compare_strategies import compare_strategies
-from trafficTSP.Approaches.Greedy.greedy_strategy import greedy_strategy
-from trafficTSP.Approaches.Random.random_strategy import random_strategy
+from trafficTSP.Approaches.Greedy.greedy_strategy import GreedyStrategy
+from trafficTSP.Approaches.Random.random_strategy import RandomStrategy
 from trafficTSP.Approaches.DiscreteWithGraph.discrete_strategy import (
-    discrete_strategy
+    DiscreteStrategy
 )
 import argparse
 import random
@@ -19,9 +19,9 @@ def main():
     # Compare strategies
     compare_strategies(
         strategies={
-            "Greedy": greedy_strategy,
-            "Random": random_strategy,
-            "Discrete": discrete_strategy
+            "Greedy": GreedyStrategy,
+            "Random": RandomStrategy,
+            "Discrete": DiscreteStrategy
         },
         max_nodes=args.nodes,
         n_repetitions=2

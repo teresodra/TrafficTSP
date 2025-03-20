@@ -5,7 +5,6 @@ import time
 from sqlalchemy import create_engine
 from trafficTSP.CreateProblems.graphs import create_graph
 from trafficTSP.Compare.evaluate_strategy import evaluate_strategy
-from trafficTSP.Approaches.Greedy.greedy_strategy import greedy_strategy
 
 default_db_location = "databases\\strategy_results.db"
 
@@ -127,10 +126,3 @@ def visualise_results(name: str = "results.png",
 
     # Show the plot
     plt.show()
-
-
-if __name__ == "__main__":
-    strategies = {
-        "Greedy": greedy_strategy
-    }
-    compare_strategies(strategies, max_nodes=10, n_repetitions=5)
