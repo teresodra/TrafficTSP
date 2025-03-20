@@ -85,13 +85,15 @@ class DiscreteStrategy:
 
     def solve(self):
         """Solve the TSP problem and return the optimal path."""
+
+        # Define variables
+        self.define_variables()
+        # Define constraints
+        self.define_constraints()
+
         print("Starting solver...")
         self.solver.Solve()
         print("Solver finished.")
-
-        for edge in self.x.keys():
-            if self.x[edge].solution_value() == 1:
-                print(f"Edge {edge} is in the solution.")
 
         solution = [self.starting_node]
         while len(solution) < self.n_nodes:
