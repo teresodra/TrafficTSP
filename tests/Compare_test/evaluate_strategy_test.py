@@ -6,7 +6,7 @@ from trafficTSP.Compare.evaluate_strategy import (
     evaluate_solution,
     evaluate_strategy
 )
-from trafficTSP.Approaches.Greedy.greedy_strategy import greedy_strategy
+from trafficTSP.Approaches.Greedy.greedy_strategy import GreedyStrategy
 
 
 @pytest.fixture
@@ -53,7 +53,7 @@ def test_evaluate_solution_single_node():
 
 def test_evaluate_strategy(fixed_graph):
     """Test evaluate_strategy correctly evaluates a strategy's performance."""
-    total_weight = evaluate_strategy(fixed_graph, greedy_strategy)
+    total_weight = evaluate_strategy(fixed_graph, GreedyStrategy)
 
     assert isinstance(total_weight, float), (
         "Total weight should be a number"
