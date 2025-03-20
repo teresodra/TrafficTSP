@@ -5,6 +5,8 @@ from trafficTSP.Approaches.DiscreteWithGraph.discrete_strategy import (
     discrete_strategy
 )
 import argparse
+import random
+import time
 
 
 def main():
@@ -27,4 +29,9 @@ def main():
 
 
 if __name__ == "__main__":
+    # Fix the seed for reproducibility
+    random.seed(0)
+    start_time = time.time()
     main()
+    end_time = time.time()
+    print(f"Total time: {end_time - start_time} seconds.")

@@ -37,6 +37,7 @@ def compare_strategies(strategies: dict,
                     "cost": cost,
                     "time_taken": time_taken
                 })
+                print(results)
 
     # Save to SQL
     save_results_to_sql(results)
