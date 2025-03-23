@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import random
 from trafficTSP.CreateProblems.graphs import create_graph
-from trafficTSP.Approaches.DiscreteWithGraph.discretise_graph import (
+from trafficTSP.Approaches.Discrete.discretise_graph import (
     discretise_and_approximate_graph
 )
 
