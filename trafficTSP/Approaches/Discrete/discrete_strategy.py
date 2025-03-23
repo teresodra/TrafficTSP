@@ -8,9 +8,11 @@ Edge = namedtuple('Edge', ['start_node', 'start_step', 'end_node', 'end_step'])
 
 class DiscreteStrategy:
     def __init__(self, graph: dict,
-                 n_bins: int = 100,
+                 n_bins: int = 30,
                  starting_node: int = 0,
-                 time_range: tuple = None):
+                 time_range: tuple = None,
+                 relative_gap_limit: float = 0.05
+                 ):
         self.graph = graph
         self.n_bins = n_bins
         self.starting_node = starting_node
@@ -24,6 +26,8 @@ class DiscreteStrategy:
 
         self.vertices = [{'node': i, 'step': t} for i in range(self.n_nodes)
                          for t in range(n_bins)]
+        # Stop solving when being this close to the solution
+        self.relative_gap_limit = relative_gap_limit
 
         self.model = cp_model.CpModel()
         self.edge_vars = {}
@@ -78,7 +82,7 @@ class DiscreteStrategy:
 
     def solve(self):
         solver = cp_model.CpSolver()
-        solver.parameters.relative_gap_limit = 0.05
+        solver.parameters.relative_gap_limit = self.relative_gap_limit
         # Stop if within 95% of optimal
         solver.parameters.max_time_in_seconds = 60.0
 

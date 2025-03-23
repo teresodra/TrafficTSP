@@ -16,6 +16,7 @@ def compare_strategies(strategies: dict,
     Compare the strategies in randomly generated graphs.
     """
     results = []
+    n_strategies = len(strategies)
     for n_nodes in range(3, max_nodes):
         print(f"Running for {n_nodes} nodes")
         # run n_repetitions
@@ -36,8 +37,8 @@ def compare_strategies(strategies: dict,
                     "cost": cost,
                     "time_taken": time_taken
                 })
-                if len(results) % 3 == 0:
-                    print(results[-3:])
+                if len(results) % n_strategies == 0:
+                    print(results[-n_strategies:])
                     print("\n")
 
     # Save to SQL
@@ -66,7 +67,9 @@ def save_results_to_sql(results, db_name=default_db_location):
 
 
 def visualise_results(name: str = "results.png",
-                      db_name: str = default_db_location):
+                      db_name: str = default_db_location,
+                      old_strategy: str = "Greedy",
+                      new_strategy: str = "Discrete"):
     """
     Visualise strategy performance:
     - Solid line: Average cost per strategy
@@ -74,14 +77,37 @@ def visualise_results(name: str = "results.png",
     """
     # Connect to the database and load results
     engine = create_engine(f"sqlite:///{db_name}")
-    query = """
+
+    # Aggregate results
+    query_aggregated = """
         SELECT strategy, n_nodes,
-               AVG(cost) AS avg_cost,
-               AVG(time_taken) AS avg_time
+            AVG(cost) AS avg_cost,
+            AVG(time_taken) AS avg_time
         FROM results
         GROUP BY strategy, n_nodes
     """
-    df = pd.read_sql(query, con=engine)
+    df_aggregated = pd.read_sql(query_aggregated, con=engine)
+
+    # Save aggregated data to a new table
+    df_aggregated.to_sql('avg_results', con=engine,
+                         index=False, if_exists='replace')
+
+    # Plot the aggregated data
+    plot_aggregated_strategy_data(df_aggregated, name)
+
+    # Compare old and new strategies
+    available_strategies = df_aggregated["strategy"].unique()
+    if (old_strategy in available_strategies and
+       new_strategy in available_strategies):
+        plot_improvement_old_to_new(engine, old_strategy, new_strategy)
+    else:
+        print(f"{old_strategy} or {new_strategy} not available.")
+
+
+def plot_aggregated_strategy_data(df: pd.DataFrame, name: str):
+    """
+    Plot the aggregated data.
+    """
 
     # Create a plot
     fig, ax1 = plt.subplots()
@@ -125,4 +151,36 @@ def visualise_results(name: str = "results.png",
     plt.savefig(f"results\\{name}")
 
     # Show the plot
+    plt.show()
+
+
+def plot_improvement_old_to_new(engine, old_strategy, new_strategy):
+    """
+    Plot the improvement from the old to the new strategy.
+    """
+
+    # Compute improvement from old to new
+    query_improvement = f"""
+        SELECT
+            g.n_nodes,
+            g.avg_cost AS greedy_cost,
+            d.avg_cost AS discrete_cost,
+            (g.avg_cost / d.avg_cost - 1) AS improvement
+        FROM avg_results AS g
+        JOIN avg_results AS d
+        ON g.n_nodes = d.n_nodes
+        WHERE g.strategy = '{old_strategy}' AND d.strategy = '{new_strategy}'
+    """
+
+    df_improvement = pd.read_sql(query_improvement, con=engine)
+
+    fig_name = f"results\\improvement_{old_strategy}_to_{new_strategy}"
+    # fig_name += f"_nodes_{max_nodes}_reps_{n_repetitions}.png"
+
+    # Plot the improvement
+    plt.plot(df_improvement["n_nodes"], df_improvement["improvement"])
+    plt.xlabel("Number of Nodes")
+    plt.ylabel("Improvement (%)")
+    plt.title(f"Improvement from {old_strategy} to {new_strategy}")
+    plt.savefig(f"{fig_name}.png")
     plt.show()
