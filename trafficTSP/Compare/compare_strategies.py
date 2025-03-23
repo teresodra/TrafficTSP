@@ -50,7 +50,6 @@ def compare_strategies(strategies: dict,
         name += "_" + key
     name += f"_nodes_{max_nodes}_reps_{n_repetitions}.png"
     visualise_results(name)
-    print(results)
 
 
 def save_results_to_sql(results, db_name=default_db_location):
@@ -101,7 +100,7 @@ def visualise_results(name: str = "results.png",
        new_strategy in available_strategies):
         plot_improvement_old_to_new(engine, old_strategy, new_strategy)
     else:
-        print(f"{old_strategy} or {new_strategy} not available.")
+        raise Exception(f"{old_strategy} or {new_strategy} not available.")
 
 
 def plot_aggregated_strategy_data(df: pd.DataFrame, name: str):
